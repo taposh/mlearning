@@ -1,11 +1,21 @@
+
+##############################################################################
+# Taposh Dutta Roy
+# CTR Prediction
+# Kaggle competition
+##############################################################################
+
 #!/usr/bin/python
 
 import getopt
 import sys, os
+#import numpy
 from optparse import OptionParser
 from datetime import datetime
 from csv import DictReader
 from math import exp, log, sqrt
+#from scipy.special import expit
+
 
 
 ##############################################################################
@@ -26,11 +36,6 @@ parser.add_option("-2", "--L2",dest="L2", default=12,type="float",action="store"
 (options, args) = parser.parse_args()
 
 
-#print "alpha:" + str(options.alpha)
-#print "beta:" + str(options.beta)
-#print "L1:" + str(options.L1)
-#print "L2:" + str(options.L2)
-#print "outputfile Name:" + options.outputfile
 
 ##############################################################################
 # parameters #################################################################
@@ -47,7 +52,7 @@ alpha = options.alpha  # learning rate
 beta = options.beta   # smoothing parameter for adaptive learning rate
 L1 = options.L1     # L1 regularization, larger value means more regularized
 L2 = options.L2     # L2 regularization, larger value means more regularized
-outputfile = "submission-file" + "-alpha-"+str(alpha)+"-beta-"+str(beta)+"-L1-"+str(L1)+"-L2-"+str(L2)+".csv"
+outputfile = "submission-file" + "-alpha-"+str(alpha)+"-beta-"+str(beta)+"-L1-"+str(L1)+"-L2-"+str(L2)+"-D30_epoch_10_v3.csv"
 submission= submissionpath + outputfile
 
 
@@ -59,13 +64,21 @@ submission= submissionpath + outputfile
 #print submission
 
 # C, feature/hash trick
-D = 2 ** 22              # number of weights to use
+D = 2 ** 30              # number of weights to use
 do_interactions = False  # whether to enable poly2 feature interactions
 
 # D, training/validation
-epoch = 1      # learn training data for N passes
+epoch = 10      # learn training data for N passes
 holdout = 29  # use every N training instance for holdout validation
 
+print "-------------------------"
+print "alpha:" + str(options.alpha)
+print "beta:" + str(options.beta)
+print "L1:" + str(options.L1)
+print "L2:" + str(options.L2)
+print "Epoch:" + str(epoch)
+print "outputfile Name:" + outputfile
+print "D : 30"
 
 ##############################################################################
 # class, function, generator definitions #####################################
@@ -114,6 +127,7 @@ class logistic_regression(object):
         # update w
         for i in x:
             w[i] += g * alpha
+
 
 
 class ftrl_proximal(object):
@@ -204,7 +218,8 @@ class ftrl_proximal(object):
         self.w = w
 
         # bounded sigmoid function, this is the probability estimation
-        return 1. / (1. + exp(-max(min(wTx, 35.), -35.)))
+        #return expit(wTx)
+        return 1. / (1. + exp(-max(min(wTx, 33.), -33.)))
 
     def update(self, x, p, y):
         ''' Update model using x, p, y
@@ -252,6 +267,12 @@ def logloss(p, y):
     return -log(p) if y == 1. else -log(1. - p)
 
 
+def sigmoid(center, length):
+    # http://en.wikipedia.org/wiki/Sigmoid_function
+    xs = np.arange(length)
+    return 1. / (1 + np.exp(-(xs - center)))
+
+
 def data(path, D):
     ''' GENERATOR: Apply hash-trick to the original csv row
                    and for simplicity, we one-hot-encode everything
@@ -288,7 +309,7 @@ def data(path, D):
             value = row[key]
 
             # one-hot encode everything with hash trick
-            index = abs(hash(key + '_' + value)) % D
+            index = (hash(key + '_' + value)) % D
             x.append(index)
 
         yield t, ID, x, y
@@ -328,17 +349,18 @@ for e in xrange(epoch):
             # step 2-2, update learner with label (click) information
             learner.update(x, p, y)
 
-        if t % 2500000 == 0 and t > 1:
-            print(' %s\tencountered: %d\tcurrent logloss: %f' % (
-                datetime.now(), t, loss/count))
-
-    print('Holdout logloss: %f,' % (loss/count) + ",Filename: " + outputfile )
+        #if t % 2500000 == 0 and t > 1:
+        #    print(' %s\tencountered: %d\tcurrent logloss: %f' % (
+        #        datetime.now(), t, loss/count))
+    strlogloss = str((loss/count))
+    #outputfile = outputfile + "_" + strlogloss
+    print('Holdout logloss: ' + strlogloss + " ,Filename: " + outputfile )
 
 
 ##############################################################################
 # start testing, and build Kaggle's submission file ##########################
 ##############################################################################
-
+#outputfile = outputfile + ".csv"
 with open(submission, 'w') as outfile:
     outfile.write('id,click\n')
     for t, ID, x, y in data(test, D):
