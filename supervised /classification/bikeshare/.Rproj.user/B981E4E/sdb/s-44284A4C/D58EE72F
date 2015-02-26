@@ -1,0 +1,16 @@
+{
+    "contents" : "#libraries Used\n\nlibrary(Matrix)\nlibrary(plyr)\nlibrary(dplyr)\nlibrary(caret)\nlibrary(Metrics)\nlibrary(stats)\nlibrary(FSelector)\nlibrary(ggplot2)\nlibrary(neuralnet)\nlibrary(party)\nlibrary(zoo)\nlibrary(sandwich)\nlibrary(strucchange)\nlibrary(modeltools)\nlibrary(stats4)\nlibrary(grid)\nlibrary(lattice)\nlibrary(\"pROC\", lib.loc=\"~/Library/R/3.1/library\")\nlibrary(randomForest)\nlibrary(nnet)\nlibrary(reshape)\n",
+    "created" : 1422089692254.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1598309924",
+    "id" : "D58EE72F",
+    "lastKnownWriteTime" : 1422342358,
+    "path" : "~/workspace/kaggle/bikeshare/mylibraries.R",
+    "project_path" : "mylibraries.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
