@@ -1,9 +1,0 @@
-{
-    "path" : "~/workspace/kaggle/bikeshare",
-    "sortOrder" : [
-        {
-            "ascending" : true,
-            "columnIndex" : 2
-        }
-    ]
-}
