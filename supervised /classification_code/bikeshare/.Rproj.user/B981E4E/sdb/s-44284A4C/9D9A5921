@@ -1,0 +1,17 @@
+{
+    "contents" : "\n## ################################MNIST################################\n## MNIST using PCA\n## World-record parameters at http://learn.h2o.ai/content/hands-on_training/deep_learning.html\n## From https://github.com/h2oai/h2o-training/blob/master/tutorials/unsupervised/anomaly/anomaly.R.md\n\n\n# The following two commands remove any previously installed H2O packages for R.\n#if (\"package:h2o\" %in% search()) { detach(\"package:h2o\", unload=TRUE) }\n#if (\"h2o\" %in% rownames(installed.packages())) { remove.packages(\"h2o\") }\n\n# Next, we download, install and initialize the H2O package for R.\n#install.packages(\"h2o\", repos=(c(\"http://s3.amazonaws.com/h2o-release/h2o/master/1497/R\", getOption(\"repos\"))))\nlibrary(h2o)\nlocalH2O = h2o.init()\n\nh2oServer <- h2o.init(nthreads=-1)\nhomedir <- \"/Users/taposh/workspace/kaggle/minst/\"\nTRAIN = \"train.csv\"\nTEST = \"test.csv\"\nmnist_train.hex <- h2o.importFile(h2oServer, path = paste0(homedir,TRAIN), header = F, sep = ',', key = 'train.hex')\nmnist_test.hex <- h2o.importFile(h2oServer, path = paste0(homedir,TEST), header = F, sep = ',', key = 'test.hex')\n\n\npredictors = c(1:784)\nresp = 785\n\nmnist_train.hex <- mnist_train.hex[,-resp]\nmnist_test.hex <- mnist_test.hex[,-resp]\n\nae_model <- h2o.deeplearning(x=predictors,\n                             y=42, #response (ignored - pick any non-constant column)\n                             data=mnist_train.hex,\n                             activation=\"Tanh\",\n                             autoencoder=T,\n                             hidden=c(50),\n                             ignore_const_cols=F,\n                             epochs=1)\ntest_rec_error <- as.data.frame(h2o.anomaly(mnist_test.hex, ae_model))\ntest_features_deep <- h2o.deepfeatures(mnist_test.hex, ae_model, layer=1)\nsummary(test_features_deep)\n\n\n\nplotDigit <- function(mydata, rec_error) {\n  len<-nrow(mydata)\n  N<-ceiling(sqrt(len))\n  op <- par(mfrow=c(N,N),pty='s',mar=c(1,1,1,1),xaxt='n',yaxt='n')\n  for (i in 1:nrow(mydata)) {\n    colors<-c('white','black')\n    cus_col<-colorRampPalette(colors=colors)\n    z<-array(mydata[i,],dim=c(28,28))\n    z<-z[,28:1]\n    image(1:28,1:28,z,main=paste0(\"rec_error: \", round(rec_error[i],4)),col=cus_col(256))\n  }\n  on.exit(par(op))\n}\n\nplotDigits <- function(data, rec_error, rows) {\n  row_idx <- order(rec_error[,1],decreasing=F)[rows]\n  my_rec_error <- rec_error[row_idx,]\n  my_data <- as.matrix(as.data.frame(data[row_idx,]))\n  plotDigit(my_data, my_rec_error)\n}\n\ntest_recon <- h2o.predict(ae_model, mnist_test.hex)\nsummary(test_recon)\n\nplotDigits(test_recon, test_rec_error, c(1:25))\nplotDigits(mnist_test.hex,   test_rec_error, c(1:25))\n\nplotDigits(test_recon, test_rec_error, c(4988:5012))\nplotDigits(mnist_test.hex,   test_rec_error, c(4988:5012))\n\nplotDigits(test_recon, test_rec_error, c(9976:10000))\nplotDigits(mnist_test.hex,   test_rec_error, c(9976:10000))\n\n\nplotDigits(test_recon, test_rec_error, c(9991:10000))\nplotDigits(mnist_test.hex,   test_rec_error, c(9991:10000))\n\n",
+    "created" : 1422385491018.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3425909952",
+    "id" : "9D9A5921",
+    "lastKnownWriteTime" : 31525687025139712,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

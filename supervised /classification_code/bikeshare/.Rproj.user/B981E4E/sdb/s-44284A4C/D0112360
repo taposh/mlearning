@@ -1,0 +1,16 @@
+{
+    "contents" : "#--------------------------------------------------------\n#  Main Program for kaggle-bike-sharing\n#  Taposh Roy @taposh_dr\n#--------------------------------------------------------\nsetwd(\"/Users/taposh/workspace/kaggle/bikeshare/\")\n#sink the output\n#sink(\"bikeshare.log\", split = T)\n#source the libraries\nsource(\"mylibraries.R\")\n#input data\nsource(\"inputdata.R\")\n#View the data\nhead(bike)\n#Visualize the data\n#source(\"/Users/taposh/workspace/kaggle/bikeshare/visualize.R\")\n#Utility Functions\nsource(\"/Users/taposh/workspace/kaggle/bikeshare/utils.R\")\n\n#################################\n### Method #1 Matrix Computation\n#################################\n#Factorengineering\nsource(\"/Users/taposh/workspace/kaggle/bikeshare/factorengineering_bike.R\")\nsource(\"matrix.R\")\n#################################\n### Method #2 Models\n#################################\n#Factorengineering\nsource(\"/Users/taposh/workspace/kaggle/bikeshare/factorengineering_v1.R\")\ncolnames(bike)\ncolnames(test)\nsource(\"models_nongrid.R\")\n#################################\n### Method #2 Models\n#################################\n#Factorengineering\nsource(\"models.R\")\n",
+    "created" : 1422157138356.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1559997911",
+    "id" : "D0112360",
+    "lastKnownWriteTime" : 1422341745,
+    "path" : "~/workspace/kaggle/bikeshare/bikesharing.R",
+    "project_path" : "bikesharing.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
